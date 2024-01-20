@@ -8,5 +8,4 @@ public class Water extends Particle
         super(ParticlesProgram.WATER, Color.blue);
     }
 
-
 }

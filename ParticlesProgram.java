@@ -15,6 +15,8 @@ public class ParticlesProgram extends Program
     public static final int SNOW = 6;
     public static final int LAVA = 7;
     public static final int CLOUD = 8;
+    private static int count = 0;
+    private static int speed = 15;
 
 
     
@@ -203,7 +205,8 @@ public class ParticlesProgram extends Program
                 {
                     for(int c=0;c<3;c++)
                     {
-                        if(grid[row-r][col+c].getType()== EMPTY)
+                        if(col+c<grid[0].length && row-r >=0 &&grid[row-r][col+c].getType()== EMPTY && 
+                        grid[row+10][col].getType() != EMPTY)
                         {
                             isCloud = false;
                         }
@@ -211,7 +214,7 @@ public class ParticlesProgram extends Program
                 }
                 if(isCloud==true)
                 {
-                    int rand = (int)(Math.random()*50);
+                    int rand = (int)(Math.random()*10000);
                     if(rand==0)
                     {
                         grid[row+1][col] = new Snow();
@@ -221,10 +224,32 @@ public class ParticlesProgram extends Program
                         grid[row+1][col] = new Water();
                     }
                 }
+                Cloud cloud = (Cloud)particle;
+                count++;
+                if(count%speed ==0)
+                {
+                    
+                if(col == grid[0].length-1 && cloud.isFloatingRight())
+                {
+                    cloud.reversed();
+                }
+                else if(col == 0 && cloud.isFloatingLeft())
+                {
+                    cloud.reversed();
+                }
+                
+                else if(cloud.isFloatingRight())
+                {
+                    tryToMoveRight(row,col);
+                }
+                else
+                {
+                    tryToMoveLeft(row,col);
+                }
+            }
 
-                //we went through 2 by 2 grid above
-                //if all cloud then make a random chance to spawn snow or water
-
+                
+        
             }
 
         }
@@ -244,11 +269,11 @@ public class ParticlesProgram extends Program
         {
             tryToMoveDown(row,col);
         }
-        if(num==1)
+        else if(num==1)
         {
             tryToMoveLeft(row,col);
         }
-        if(num==2)
+        else if(num==2)
         {
             tryToMoveRight(row,col);
         }
@@ -257,7 +282,7 @@ public class ParticlesProgram extends Program
 
     public void tryToMoveLeft(int row, int col)
     {
-        if(col>0&& grid[row][col-1]==null)
+        if(col>0&& grid[row][col-1].getType()==EMPTY)
         {
             grid[row][col-1] = grid[row][col];
             grid[row][col] = new Empty();
